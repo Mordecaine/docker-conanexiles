@@ -24,6 +24,7 @@ RUN dpkg --add-architecture i386 \
     && apt-add-repository 'https://dl.winehq.org/wine-builds/ubuntu/' \
     && apt-add-repository ppa:cybermax-dexter/sdl2-backport \
     && apt-get update \
+    && apt-get install --install-recommends winehq-stable -y\
     && apt-get install --install-recommends --assume-yes winehq-devel \
     && pip3 install python-valve \
     && apt-get clean \

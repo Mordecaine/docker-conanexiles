@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL maintainer="Paul Steinlechner"
 
@@ -19,19 +19,21 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN dpkg --add-architecture i386 \
-    && curl https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
-    && apt-add-repository 'https://dl.winehq.org/wine-builds/ubuntu/' \
-    && apt-add-repository ppa:cybermax-dexter/sdl2-backport \
-    && apt-get update \
-    && apt-get install --install-recommends winehq-stable -y\
-    && apt-get install --install-recommends --assume-yes winehq-devel \
+# Install Wine
+RUN wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add \
+    && dpkg --add-architecture i386 \
+    && apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' \
+    && apt update \
+    && apt install wine64 wine32 -y \
+    && apt install screen xvfb -y \
     && pip3 install python-valve \
+    && apt install --install-recommends winehq-stable -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+
 # Install winetricks
-ADD https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks /usr/bin/winetricks
+ADD winetricks /usr/bin/winetricks
 RUN chmod +x /usr/bin/winetricks
 
 RUN apt-get update \
